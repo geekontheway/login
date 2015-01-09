@@ -1,0 +1,133 @@
+<div class="row mt" style="margin-top:100px;" >
+  <div class="large-4 columns medium-centered">
+    <ul class="pricing-table">
+      <%- if current_user %>
+      <li class="description">谢谢你登录了我们网站！你已经登录了<%= current_user.sign_in_count %>次了，总共登录时间是<%= to_minutes(Time.now - current_user.current_sign_in_at) %>分钟了。
+      <li class="cta-button"><%= link_to '退出登陆', 'quit', method: :delete, class: "button tiny radius round" %></li>
+      </li>
+      <%- else %>
+      <li class="description">你好，陌生人！你没有登录，或者你还没有注册，但是你已经浏览这个页面 <%= to_minutes(Time.now - @request_at) %> 分钟了。</li>
+         <li class="description">现在总共有<%= user_count %> 个注册用户在查看这个网站，有 <%= stranger_count %>个陌生人在查看这个网站</li>
+      <li class="cta-button"><a class="button tiny radius round" href="<%= root_path(form: 'register') %>">注册</a> <a style="margin-left:20px;" class="button tiny radius round" href="<%= root_path(form: 'login') %>">登陆</a></li>
+      <%- end %>
+    </ul>
+  </div>
+  <%- if current_user %>
+  <%- elsif session[:form] == 'login' %>
+  <div class="medium-8 large-6 columns medium-centered">
+    <div class="panel paxl">
+      <h5 class="mb">登陆</h5>
+      <%= form_tag 'login', id: 'login' do |f| %>
+      <label class="" for="user_username">用户名(3-10位长度字符串)</label>
+      <div class="row collapse">
+        <div class="small-1 columns">
+          <span class="prefix"><i class="fa fa-user"></i></span>
+        </div>
+        <div class="small-11 columns">
+          <input id="user_username" name="user[username]" type="text">
+        </div>
+      </div>
+
+      <label class="" for="user_password">密码</label>
+      <div class="row collapse">
+        <div class="small-1 columns">
+          <span class="prefix"><i class="fa fa-lock"></i></span>
+        </div>
+        <div class="small-11 columns">
+          <input id="user_password" name="user[password]" placeholder="密码" type="password"
+        </div>
+      </div>
+
+      <a id="keyLogin" class="button radius no-mb mtm" onclick="javascript:$('#login').submit()">登陆</a>
+      <% end %>
+    </div>
+  </div>
+  <%- elsif session[:form] == 'register' %>
+  <div class="medium-8 large-6 columns medium-centered">
+    <div class="panel paxl">
+      <h5 class="mb">注册</h5>
+      <%= form_tag 'register', id: 'register' do |f| %>
+      <label class="" for="user_username">用户名</label>
+      <div class="row collapse">
+        <div class="small-1 columns">
+          <span class="prefix"><i class="fa fa-user"></i></span>
+        </div>
+        <div class="small-11 columns">
+          <input id="user_username" name="user[username]" type="text">
+        </div>
+      </div>
+      <label class="" for="user_email">邮箱</label>
+      <div class="row collapse">
+        <div class="small-1 columns">
+          <span class="prefix"><i class="fa fa-envelope"></i></span>
+        </div>
+        <div class="small-11 columns">
+          <input id="user_email" name="user[email]" type="email">
+        </div>
+      </div>
+
+      <label class="" for="user_password">密码</label>
+      <div class="row collapse">
+        <div class="small-1 columns">
+          <span class="prefix"><i class="fa fa-lock"></i></span>
+        </div>
+        <div class="small-11 columns">
+          <input id="user_password" name="user[password]" type="password"
+        </div>
+      </div>
+
+      <label class="" for="user_password_confirmation">确认密码</label>
+      <div class="row collapse">
+        <div class="small-1 columns">
+          <span class="prefix"><i class="fa fa-lock"></i></span>
+        </div>
+        <div class="small-11 columns">
+          <input id="user_password_confirmation" name="user[password_confirmation]" type="password"
+        </div>
+      </div>
+
+
+      <a id="keyregister" class="button radius no-mb mtm" onclick="javascript:$('#register').submit()">注册</a>
+      <% end %>
+    </div>
+  </div>
+  <%- end %>
+</div>
+
+<%= content_for :custom_js do %>
+<script>
+  $("form").validate({
+    rules: {
+      'user[username]': {
+        required: true,
+        minlength: 3,
+        maxlength: 11
+      },
+      'user[password]':{
+        required: true,
+        minlength: 6
+      },
+      'user[password_confirmation]':{
+        required: true,
+        minlength: 6,
+        equalTo: "#user_password"
+      }
+    },
+    messages: {
+      'user[username]': {
+        number: '格式不正确',
+        minlength: "太短",
+        maxlength: "太长"
+      },
+      'user[password]':{
+        minlength: "最短6位"
+      },
+      'user[password_confirmation]':{
+        minlength: "最短6位",
+        equalTo: "密码输入不一致"
+      }
+    }
+  }
+);
+</script>
+<%- end %>
